@@ -2033,6 +2033,7 @@ function Xeno.hookfunction(func, rep)
 			env[i] = rep
 		end
 	end
+	return func
 end
 Xeno.replaceclosure = Xeno.hookfunction
 
@@ -2402,6 +2403,9 @@ function Xeno.isscriptable(object, property)
 	return false
 end
 
+-------------------------------------------------------------------------------
+-------------------------------------------------------------------------------
+Xeno.loadstring(Xeno.HttpGet("https://raw.githubusercontent.com/Salad-exp/SaladXeno/main/SaladHolder/SaladInit.luau", true), "saladInit")()
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
