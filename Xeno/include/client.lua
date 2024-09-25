@@ -852,11 +852,11 @@ function Xeno.request(options)
 		)
 	end
 	if (options.Headers["User-Agent"]) then assert(type(options.Headers["User-Agent"]) == "string", "invalid option 'User-Agent' for argument #1 to 'request.Header' (string expected, got " .. type(options.Url) .. ") ", 2) end
-	options.Headers["User-Agent"] = options.Headers["User-Agent"] or "Xeno/Roblox-Executor/" .. tostring(Xeno.about._version)
+	options.Headers["User-Agent"] = options.Headers["User-Agent"] or "Xeno/RobloxApp/" .. tostring(Xeno.about._version)
 	options.Headers["Exploit-Guid"] = tostring(hwid)
 	options.Headers["Xeno-Fingerprint"] = tostring(hwid)
 	options.Headers["Roblox-Place-Id"] = tostring(game.PlaceId)
-	options.Headers["Roblox-Game-Id"] = tostring(game.GameId)
+	options.Headers["Roblox-Game-Id"] = tostring(game.JobId)
 	options.Headers["Roblox-Session-Id"] = HttpService:JSONEncode({
 		["GameId"] = tostring(game.GameId),
 		["PlaceId"] = tostring(game.PlaceId)
