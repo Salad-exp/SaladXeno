@@ -6,6 +6,7 @@
    -credits: \__,_|_|\__,_|\__,_|  \_____|_|\___/|_.__/ \__,_|_|___/
    -salad: Owner of Salad Globals
    -carot: Co-Owner of Salad Globals
+   -solara: most of the drawing lib
 ]]
 local identity = 3 -- xeno's identity lol 
 hookfunction(printidentity, function() print("Current identity is "..identity) end) --- fr!1!!11
