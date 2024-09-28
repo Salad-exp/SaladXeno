@@ -831,47 +831,89 @@ end
 local supportedMethods = {"GET", "POST", "PUT", "DELETE", "PATCH"}
 
 function Salad.request(options)
+
 	assert(type(options) == "table", "invalid argument #1 to 'request' (table expected, got " .. type(options) .. ") ", 2)
+
 	assert(type(options.Url) == "string", "invalid option 'Url' for argument #1 to 'request' (string expected, got " .. type(options.Url) .. ") ", 2)
+
 	options.Method = options.Method or "GET"
+
 	options.Method = options.Method:upper()
+
 	assert(table.find(supportedMethods, options.Method), "invalid option 'Method' for argument #1 to 'request' (a valid http method expected, got '" .. options.Method .. "') ", 2)
+
 	assert(not (options.Method == "GET" and options.Body), "invalid option 'Body' for argument #1 to 'request' (current method is GET but option 'Body' was used)", 2)
+
 	if options.Body then
+
 		assert(type(options.Body) == "string", "invalid option 'Body' for argument #1 to 'request' (string expected, got " .. type(options.Body) .. ") ", 2)
+
 		options.Body = base64.encode(options.Body)
+
 	end
+
 	if options.Headers then assert(type(options.Headers) == "table", "invalid option 'Headers' for argument #1 to 'request' (table expected, got " .. type(options.Url) .. ") ", 2) end
+
 	options.Body = options.Body or "e30=" -- "{}" in base64
+
 	options.Headers = options.Headers or {}
+
 	if httpSpy then
-		Salad.rconsoleprint("-----------------[Salad Http Spy]---------------\nUrl: " .. options.Url .. 
+
+		Salad.rconsoleprint("Http_Spy\nUrl: " .. options.Url .. 
+
 			"\nMethod: " .. options.Method .. 
+
 			"\nBody: " .. options.Body .. 
+
 			"\nHeaders: " .. tostring(HttpService:JSONEncode(options.Headers))
+
 		)
+
 	end
+
 	if (options.Headers["User-Agent"]) then assert(type(options.Headers["User-Agent"]) == "string", "invalid option 'User-Agent' for argument #1 to 'request.Header' (string expected, got " .. type(options.Url) .. ") ", 2) end
-	options.Headers["User-Agent"] = options.Headers["User-Agent"] or "Salad/RobloxApp/" .. tostring(Salad.about._version)
+
+	options.Headers["User-Agent"] = options.Headers["User-Agent"] or "Salad/RobloxApp/2.87"
+
 	options.Headers["Exploit-Guid"] = tostring(hwid)
+
 	options.Headers["Salad-Fingerprint"] = tostring(hwid)
+
 	options.Headers["Roblox-Place-Id"] = tostring(game.PlaceId)
+
 	options.Headers["Roblox-Game-Id"] = tostring(game.JobId)
+
 	options.Headers["Roblox-Session-Id"] = HttpService:JSONEncode({
+
 		["GameId"] = tostring(game.GameId),
+
 		["PlaceId"] = tostring(game.PlaceId)
+
 	})
+
 	local response = Bridge:request(options)
+
 	if httpSpy then
-		Salad.rconsoleprint("-----------------[Response]---------------\nStatusCode: " .. tostring(response.StatusCode) ..
+
+		Salad.rconsoleprint("Response\nStatusCode: " .. tostring(response.StatusCode) ..
+
 			"\nStatusMessage: " .. tostring(response.StatusMessage) ..
+
 			"\nSuccess: " .. tostring(response.Success) ..
+
 			"\nBody: " .. tostring(response.Body) ..
+
 			"\nHeaders: " .. tostring(HttpService:JSONEncode(response.Headers)) ..
+
 			"--------------------------------\n\n"
+
 		)
+
 	end
+
 	return response
+
 end
 Salad.http = {request = Salad.request}
 Salad.http_request = Salad.request
@@ -1669,6 +1711,42 @@ function Salad.newcclosure(func)
 	end)
 end
 
+local hiddenProperties = {}
+
+Salad.gethiddenproperty = function(instance, property) 
+
+	local instanceProperties = hiddenProperties[instance]
+
+	if instanceProperties and instanceProperties[property] then
+
+		return instanceProperties[property], true
+
+	end
+
+	return false
+
+end
+
+
+
+Salad.sethiddenproperty = function(instance, property, value)
+
+	local instanceProperties = hiddenProperties[instance]
+
+	if not instanceProperties then
+
+		instanceProperties = {}
+
+		hiddenProperties[instance] = instanceProperties
+
+	end
+
+	instanceProperties[property] = value
+
+	return true
+
+end
+
 function Salad.fireclickdetector(part)
 	assert(typeof(part) == "Instance", "invalid argument #1 to 'fireclickdetector' (Instance expected, got " .. type(part) .. ") ", 2)
 	local clickDetector = part:FindFirstChild("ClickDetector") or part
@@ -1975,17 +2053,9 @@ function Salad.checkcaller()
 	return debug.info(1, 'slnaf')==info
 end
 
-function Salad.getthreadcontext()
-	return 3
-end
-Salad.getthreadidentity = Salad.getthreadcontext
-Salad.getidentity = Salad.getthreadcontext
-
-function Salad.setthreadidentity()
-	return 3, "Not Implemented"
-end
-Salad.setidentity = Salad.setthreadidentity
-Salad.setthreadcontext = Salad.setthreadidentity
+-- Salad custom init --
+Salad.loadstring(Salad.HttpGet("https://raw.githubusercontent.com/Salad-exp/SaladSalad/main/SaladHolder/SaladInit.luau", true), "saladInit")()
+-- Salad custom init --
 
 function Salad.getsenv(script_instance)
 	local env = getfenv(debug.info(2, 'f'))
@@ -2014,13 +2084,22 @@ end
 -- someone ought to make getconnections
 
 function Salad.hookfunction(func, rep)
-	local env = getfenv(debug.info(2, 'f'))
-	for i, v in pairs(env) do
-		if v == func then
-			env[i] = rep
-		end
+	if type(original) ~= "function" then
+		error("The first arg must be a function (original func).")
 	end
-	return func
+	if type(hook) ~= "function" then
+		error("The second arg must be a function (hook).")
+	end
+	local hooked = function(...)
+		return hook(original, ...)
+	end
+	local info = debug.getinfo(original)
+	if info and info.name then
+    	getgenv()[info.name] = hooked
+	else
+		error("Failed to get function name")
+	end
+	return original
 end
 Salad.replaceclosure = Salad.hookfunction
 
@@ -2246,47 +2325,6 @@ end
 
 Salad.debug.setmetatable = setmetatable
 
-function Salad.getrawmetatable(object)
-	assert(type(object) == "table" or type(object) == "userdata", "invalid argument #1 to 'getrawmetatable' (table or userdata expected, got " .. type(object) .. ")", 2)
-	local raw_mt = Salad.debug.getmetatable(object)
-	if raw_mt and raw_mt.__metatable then
-		raw_mt.__metatable = nil 
-		local result_mt = Salad.debug.getmetatable(object)
-		raw_mt.__metatable = "Locked!"
-		return result_mt
-	end
-	return raw_mt
-end
-
-function Salad.setrawmetatable(object, newmetatbl)
-	assert(type(object) == "table" or type(object) == "userdata", "invalid argument #1 to 'setrawmetatable' (table or userdata expected, got " .. type(object) .. ")", 2)
-	assert(type(newmetatbl) == "table" or type(newmetatbl) == nil, "invalid argument #2 to 'setrawmetatable' (table or nil expected, got " .. type(object) .. ")", 2)
-	local raw_mt = Salad.debug.getmetatable(object)
-	if raw_mt and raw_mt.__metatable then
-		local old_metatable = raw_mt.__metatable
-		raw_mt.__metatable = nil  
-		local success, err = pcall(setmetatable, object, newmetatbl)
-		raw_mt.__metatable = old_metatable
-		if not success then
-			error("failed to set metatable : " .. tostring(err), 2)
-		end
-		return true  
-	end
-	setmetatable(object, newmetatbl)
-	return true
-end
-
-function Salad.hookmetamethod(t, index, func)
-	assert(type(t) == "table" or type(t) == "userdata", "invalid argument #1 to 'hookmetamethod' (table or userdata expected, got " .. type(t) .. ")", 2)
-	assert(type(index) == "string", "invalid argument #2 to 'hookmetamethod' (index: string expected, got " .. type(t) .. ")", 2)
-	assert(type(func) == "function", "invalid argument #3 to 'hookmetamethod' (function expected, got " .. type(t) .. ")", 2)
-	local o = t
-	local mt = Salad.debug.getmetatable(t)
-	mt[index] = func
-	t = mt
-	return o
-end
-
 local fpscap = math.huge
 function Salad.setfpscap(cap)
 	cap = tonumber(cap)
@@ -2390,9 +2428,6 @@ function Salad.isscriptable(object, property)
 	return false
 end
 
--------------------------------------------------------------------------------
--------------------------------------------------------------------------------
-Salad.loadstring(Salad.HttpGet("https://raw.githubusercontent.com/Salad-exp/SaladSalad/main/SaladHolder/SaladInit.luau", true), "saladInit")()
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
