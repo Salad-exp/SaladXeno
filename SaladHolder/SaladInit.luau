@@ -9,6 +9,7 @@
 ]]
 local identity = 3 -- xeno's identity lol 
 hookfunction(printidentity, function() print("Current identity is "..identity) end) --- fr!1!!11
+local Salad = {}
 Salad.getthreadidentity = function()
     return identity 
 end 
