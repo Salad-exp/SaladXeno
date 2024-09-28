@@ -724,3 +724,173 @@ Salad.getrenderproperty = function(obj, property)
     
     return obj[property]
 end
+
+-- credits: solara
+local wrappercache = setmetatable({}, {__mode = "k"})
+local vulnInstanceTbl = {
+	"HttpRbxApiService",
+	"MarketplaceService",
+	"GuiService",
+	"HttpService",
+	"OpenCloudService",
+	"BrowserService",
+	"LinkingService",
+	"MessageBusService",
+	"OmniRecommendationsService",
+	"Script Context",
+	"ScriptContext",
+	"CoreGui",
+	"game",
+	"Game"
+}
+local vulnFuncTbl = {
+	"PostAsync",
+	"PostAsyncFullUrl",
+	"PerformPurchaseV2",
+	"PromptBundlePurchase",
+	"PromptGamePassPurchase",
+	"PromptProductPurchase",
+	"PromptPurchase",
+	"PromptRobloxPurchase",
+	"PromptThirdPartyPurchase",
+	"OpenBrowserWindow",
+	"OpenNativeOverlay",
+	"HttpRequestAsync",
+	"AddCoreScriptLocal",
+	"EmitHybridEvent",
+	"ExecuteJavaScript",
+	"ReturnToJavaScript",
+	"SendCommand",
+	"Call",
+	"OpenUrl",
+	"SaveScriptProfilingData",
+	"GetLast",
+	"GetMessageId", 
+	"GetProtocolMethodRequestMessageId",
+	"GetProtocolMethodResponseMessageId",
+	"MakeRequest",
+	"Publish",
+	"PublishProtocolMethodRequest",
+	"PublishProtocolMethodResponse",
+	"Subscribe",
+	"SubscribeToProtocolMethodRequest",
+	"SubscribeToProtocolMethodResponse",
+	"GetRobuxBalance",
+	"GetAsyncFullUrl",
+	"PromptNativePurchaseWithLocalPlayer",
+	"PromptNativePurchase",
+	"PromptCollectiblesPurchase",
+	"TakeScreenshot",
+	"GetAsync",
+	"RequestAsync",
+	"RequestInternal",
+	"ToggleRecording",
+	"OpenScreenshotsFolder",
+	"Load"
+}
+local function notificationblocklol(title, text)
+	if title == "JJSploit Injected" and text == "https://wearedevs.net" then
+		return true
+	end
+	return false
+end
+wrap = function(real)
+	for w,r in next,wrappercache do
+		if r == real then
+			return w
+		end
+	end
+
+	if type(real) == "userdata" then
+		local fake = newproxy(true)
+		local meta = getmetatable(fake)
+		
+		meta.__index = function(s,k)
+			if table.find(vulnFuncTbl, k) then 
+				return function()
+					error(tostring(k).." is blocked.")
+				end
+			elseif k == "HttpGet" or k == "HttpGetAsync" then
+				return function(self, url)    
+					assert(typeof(url)=="string", "Expected string for URL")
+					local ret
+					local returnBindable = Instance.new("BindableEvent")
+					game:GetService("HttpService"):RequestInternal({Url = url:gsub('roblox.com','roproxy.com'), CachePolicy = Enum.HttpCachePolicy.None, Headers = {["Solara-Fingerprint"] = shared.globalEnv.gethwid and shared.globalEnv.gethwid() or "OUTDATED"}}):Start(function(success, data)
+						ret = data.Body
+
+						returnBindable:fire()
+					end)
+
+					returnBindable.Event:Wait()
+
+					return ret
+
+				end
+			elseif k == "GetObjects" or k == "LoadLocalAsset" or k == "LoadAsset" then
+				return function(self, id)
+					local ret = {[1] = game:FindFirstChildOfClass("InsertService"):LoadLocalAsset(id)}
+					return ret
+				end
+			elseif k == "GetService" or k == "FindService" or k == "service" or k == "Service" then
+				return function(self, service, ...)
+					if table.find(vulnInstanceTbl, service) then
+						return wrap(real[k](real, service))
+					end
+					return real[k](real, service)
+				end
+			end
+
+			if table.find(vulnInstanceTbl, tostring(real[k])) or table.find(vulnInstanceTbl, k) or table.find(vulnInstanceTbl, tostring(real)) then 
+				return wrap(real[k])
+			end
+
+			return typeof(real[k]) == "Instance" and real[k] or wrap(real[k])
+		end
+
+		meta.__newindex = function(s,k,v)
+			real[k] = v
+		end
+
+		meta.__tostring = function(s)
+			return tostring(real)
+		end
+
+		wrappercache[fake] = real
+
+		if table.find(vulnInstanceTbl, tostring(real)) then 
+			return fake
+		end
+
+		return (typeof(real) == "Instance" and real.ClassName ~= "DataModel") and real or fake
+	elseif type(real) == "function" then
+		local fake = function(...)
+			local args = unwrap{...}
+			local results = wrap{real(unpack(args))}
+			return unpack(results)
+		end
+		wrappercache[fake] = real
+		return fake
+
+	elseif type(real) == "table" then
+		local fake = {}
+		for k,v in next,real do
+
+			fake[k] = (typeof(v) == "Instance" and v.ClassName ~= "DataModel") and v or wrap(v)
+		end
+		return fake
+
+	else
+		return real
+	end
+end
+
+getgenv().game = wrap(game)
+
+local oldlistfiles = listfiles 
+getgenv().listfiles = function(folder) 
+    if string.find(folder, "C:") or string.find(folder, ".") or folder == "" then 
+        return listfiles()
+    else 
+        return oldlistfiles(folder)
+    end 
+end
