@@ -46,30 +46,30 @@ This executor has many vulnerabilities because only I have used **Xeno** and did
 Custom functions examples:
 ```lua
 -- get real address
-local address = Xeno.get_real_address(game:GetService("ScriptContext"))
+local address = Salad.get_real_address(game:GetService("ScriptContext"))
 print("Script context address:", string.format("0x%x", address))
 
 -- spoof instance
-Xeno.spoof_instance(game:GetService("CoreGui"), 0) -- set the address of coregui to 0
-Xeno.spoof_instance(game.Players.LocalPlayer, Instance.new("Part")) -- set the localplayers address to a part
+Salad.spoof_instance(game:GetService("CoreGui"), 0) -- set the address of coregui to 0
+Salad.spoof_instance(game.Players.LocalPlayer, Instance.new("Part")) -- set the localplayers address to a part
 
 -- http spy
-Xeno.HttpSpy() -- set http spy to true
-Xeno.HttpSpy(false) -- set httpspy to false
+Salad.HttpSpy() -- set http spy to true
+Salad.HttpSpy(false) -- set httpspy to false
 
 -- globals (shared across all clients, saved inside the executor)
 -- similar to Instance:GetAttribute() but supports tables
 -- global name, value
-Xeno.SetGlobal("__test", { -- can only set table, number, and string as a global
+Salad.SetGlobal("__test", { -- can only set table, number, and string as a global
 	["test_text"] = "hello, world!"
 })
 
-local t = Xeno.GetGlobal("__test") -- the table we just set
+local t = Salad.GetGlobal("__test") -- the table we just set
 print(t.test_text) -- hello, world!
 
 -- other
-print(Xeno.PID) -- current roblox process id
-print(Xeno.GUID) -- the guid it is using to communicate with the external
+print(Salad.PID) -- current roblox process id
+print(Salad.GUID) -- the guid it is using to communicate with the external
 ```
 
 The current method of adding **HttpGet** to "game" interferes with some scripts like [**dex**](https://raw.githubusercontent.com/infyiff/backup/main/dex.lua). To execute dex run this script:

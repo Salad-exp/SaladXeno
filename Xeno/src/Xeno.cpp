@@ -85,7 +85,7 @@ extern "C" {
         /*
         FILE* conOut;
         AllocConsole();
-        SetConsoleTitleA("Xeno");
+        SetConsoleTitleA("Salad");
         freopen_s(&conOut, "CONOUT$", "w", stdout);
         freopen_s(&conOut, "CONOUT$", "w", stderr);
         */

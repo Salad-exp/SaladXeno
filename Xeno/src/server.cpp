@@ -46,7 +46,7 @@ static void activate_console() {
 	console_active = true;
 
 	AllocConsole();
-	SetConsoleTitleA("Xeno");
+	SetConsoleTitleA("Salad");
 	FILE* pCout;
 	freopen_s(&pCout, "CONOUT$", "w", stdout);
 	freopen_s(&pCout, "CONIN$", "r", stdin);

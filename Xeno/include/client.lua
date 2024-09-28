@@ -6,22 +6,22 @@ local HttpService, UserInputService, InsertService = game:FindService("HttpServi
 local RunService, CoreGui, StarterGui = game:GetService("RunService"), game:FindService("CoreGui"), game:GetService("StarterGui")
 local VirtualInputManager, RobloxReplicatedStorage = Instance.new("VirtualInputManager"), game:GetService("RobloxReplicatedStorage")
 
-if RobloxReplicatedStorage:FindFirstChild("Xeno") then return end
+if RobloxReplicatedStorage:FindFirstChild("Salad") then return end
 
-local XenoContainer = Instance.new("Folder", RobloxReplicatedStorage)
-XenoContainer.Name = "Xeno"
-local objectPointerContainer, scriptsContainer = Instance.new("Folder", XenoContainer), Instance.new("Folder", XenoContainer)
+local SaladContainer = Instance.new("Folder", RobloxReplicatedStorage)
+SaladContainer.Name = "Salad"
+local objectPointerContainer, scriptsContainer = Instance.new("Folder", SaladContainer), Instance.new("Folder", SaladContainer)
 objectPointerContainer.Name = "Instance Pointers"
 scriptsContainer.Name = "Scripts"
 
-local Xeno = {
+local Salad = {
 	about = {
-		_name = 'Xeno',
+		_name = 'Salad(Xeno)',
 		_version = '%XENO_VERSION%',
-		_publisher = ".rizve | https://rizve.us.to"
+		_publisher = "Salad"
 	}
 }
-table.freeze(Xeno.about)
+table.freeze(Salad.about)
 
 local coreModules, blacklistedModuleParents = {}, {
 	"Common",
@@ -56,21 +56,21 @@ end
 local libs = {
 	{
 		['name'] = "HashLib",
-		['url'] = "https://rizve.us.to/Xeno/hash"
+		['url'] = "https://rizve.us.to/Salad/hash"
 	},
 	{
 		['name'] = "lz4",
-		['url'] = "https://rizve.us.to/Xeno/lz4"
+		['url'] = "https://rizve.us.to/Salad/lz4"
 	},
 	{
 		['name'] = "DrawingLib",
-		['url'] = "https://rizve.us.to/Xeno/drawing"
+		['url'] = "https://rizve.us.to/Salad/drawing"
 	}
 }
 
 if script.Name == "VRNavigation" then
 	StarterGui:SetCore("SendNotification", {
-		Title = "[Xeno]",
+		Title = "[Salad]",
 		Text = "Used ingame method. When you leave the game it might crash!"
 	})
 end
@@ -332,7 +332,7 @@ function Bridge:InternalRequest(body, timeout)
 	end)
 
 	if success and result then
-		error("XENO SERVER ERROR: " .. tostring(result), 2)
+		error("SALAD SERVER ERROR: " .. tostring(result), 2)
 	end
 
 	error("An unknown error occured by the server.", 2)
@@ -431,7 +431,7 @@ function Bridge:SyncFiles()
 		getAllFiles("./")
 	end) if not success then
 		StarterGui:SetCore("SendNotification", {
-			Title = "[Xeno]",
+			Title = "[Salad]",
 			Text = "Could not sync virtual files from client to external. Server was closed or it is being overloaded"
 		})
 		return
@@ -498,7 +498,7 @@ function Bridge:loadstring(source, chunkName)
 	local coreModule = _game.Clone(coreModules[math.random(1, #coreModules)])
 	coreModule:ClearAllChildren()
 	coreModule.Name = HttpService:GenerateGUID(false) .. ":" .. chunkName
-	coreModule.Parent = XenoContainer
+	coreModule.Parent = SaladContainer
 	table.insert(cachedModules, coreModule)
 
 	local result = self:InternalRequest({
@@ -525,7 +525,7 @@ function Bridge:loadstring(source, chunkName)
 			end
 
 			if (tick() - clock > 5) then
-				warn("[XENO]: loadstring failed and timed out")
+				warn("[SALAD]: loadstring failed and timed out")
 				for _, module in pairs(cachedModules) do
 					module:Destroy()
 				end
@@ -537,7 +537,7 @@ function Bridge:loadstring(source, chunkName)
 			coreModule = _game.Clone(coreModules[math.random(1, #coreModules)])
 			coreModule:ClearAllChildren()
 			coreModule.Name = HttpService:GenerateGUID(false) .. ":" .. chunkName
-			coreModule.Parent = XenoContainer
+			coreModule.Parent = SaladContainer
 
 			self:InternalRequest({
 				['Url'] = self.serverUrl .. "/loadstring?n=" .. coreModule.Name .. "&cn=" .. chunkName .. "&pid=" .. tostring(ProcessID),
@@ -577,7 +577,7 @@ function Bridge:request(options)
 	end
 	return {
 		Success = false,
-		StatusMessage = "Can't connect to Xeno web server: " .. self.serverUrl,
+		StatusMessage = "Can't connect to Salad web server: " .. self.serverUrl,
 		StatusCode = 599;
 		HttpError = Enum.HttpError.ConnectFail
 	}
@@ -695,18 +695,18 @@ end
 
 -- / IMPORTANT FUNCS \ --
 local httpSpy = false
-Xeno.Xeno = {
+Salad.Salad = {
 	PID = ProcessID,
 	GUID = XENO_UNIQUE,
 	HttpSpy = function(state)
 		if state == nil then state = true end
 		assert(type(state) == "boolean", "invalid argument #1 to 'HttpSpy' (boolean expected, got " .. type(state) .. ") ", 2)
-		Xeno.rconsoleinfo("Http Spy is set to '" .. tostring(state) .. "'")
+		Salad.rconsoleinfo("Http Spy is set to '" .. tostring(state) .. "'")
 		httpSpy = state
 	end,
 }
 
-function Xeno.Xeno.get_real_address(instance)
+function Salad.Salad.get_real_address(instance)
 	assert(typeof(instance) == "Instance", "invalid argument #1 to 'get_real_address' (Instance expected, got " .. typeof(instance) .. ") ", 2)
 	local objectValue = Instance.new("ObjectValue", objectPointerContainer)
 	objectValue.Name = HttpService:GenerateGUID(false)
@@ -723,7 +723,7 @@ function Xeno.Xeno.get_real_address(instance)
 	return 0
 end
 
-function Xeno.Xeno.spoof_instance(instance, newinstance)
+function Salad.Salad.spoof_instance(instance, newinstance)
 	assert(typeof(instance) == "Instance", "invalid argument #1 to 'spoof_instance' (Instance expected, got " .. typeof(instance) .. ") ", 2)
 	assert(typeof(newinstance) == "Instance" or type(newinstance) == "number", "invalid argument #2 to 'spoof_instance' (Instance or number expected, got " .. typeof(newinstance) .. ") ", 2)
 	local newAddress
@@ -731,7 +731,7 @@ function Xeno.Xeno.spoof_instance(instance, newinstance)
 		if type(newinstance) == "number" then 
 			newAddress = newinstance
 		else
-			newAddress = Xeno.Xeno.get_real_address(newinstance)
+			newAddress = Salad.Salad.get_real_address(newinstance)
 		end
 	end
 	local objectValue = Instance.new("ObjectValue", objectPointerContainer)
@@ -748,7 +748,7 @@ function Xeno.Xeno.spoof_instance(instance, newinstance)
 end
 
 -- globals, shared across all clients (made for testing only so its badly coded)
-function Xeno.Xeno.GetGlobal(global_name)
+function Salad.Salad.GetGlobal(global_name)
 	assert(type(global_name) == "string", "invalid argument #1 to 'GetGlobal' (string expected, got " .. type(global_name) .. ") ", 2)
 	local result = Bridge:InternalRequest({
 		['c'] = "gb",
@@ -770,7 +770,7 @@ function Xeno.Xeno.GetGlobal(global_name)
 		return HttpService:JSONDecode(result.d)
 	end
 end
-function Xeno.Xeno.SetGlobal(global_name, value)
+function Salad.Salad.SetGlobal(global_name, value)
 	assert(type(global_name) == "string", "invalid argument #1 to 'SetGlobal' (string expected, got " .. type(global_name) .. ") ", 2)
 	local valueT = type(value)
 	assert(valueT == "string" or valueT == "number" or valueT == "table", "invalid argument #2 to 'SetGlobal' (string, number, or table expected, got " .. valueT .. ") ", 2)
@@ -786,14 +786,14 @@ function Xeno.Xeno.SetGlobal(global_name, value)
 	}) ~= nil
 end
 
-function Xeno.Xeno.Compile(source)
+function Salad.Salad.Compile(source)
 	assert(type(source) == "string", "invalid argument #1 to 'Compile' (string expected, got " .. type(source) .. ") ", 2)
 	if source == "" then return "" end
 	local _, result = Bridge:CanCompile(source, true)
 	return result
 end
 
-function Xeno.require(moduleScript)
+function Salad.require(moduleScript)
 	assert(typeof(moduleScript) == "Instance", "Attempted to call require with invalid argument(s). ", 2)
 	assert(moduleScript.ClassName == "ModuleScript", "Attempted to call require with invalid argument(s). ", 2)
 
@@ -811,7 +811,7 @@ function Xeno.require(moduleScript)
 	return _require(moduleScript)
 end
 
-function Xeno.loadstring(source, chunkName)
+function Salad.loadstring(source, chunkName)
 	assert(type(source) == "string", "invalid argument #1 to 'loadstring' (string expected, got " .. type(source) .. ") ", 2)
 	chunkName = chunkName or "loadstring"
 	assert(type(chunkName) == "string", "invalid argument #2 to 'loadstring' (string expected, got " .. type(chunkName) .. ") ", 2)
@@ -830,7 +830,7 @@ end
 
 local supportedMethods = {"GET", "POST", "PUT", "DELETE", "PATCH"}
 
-function Xeno.request(options)
+function Salad.request(options)
 	assert(type(options) == "table", "invalid argument #1 to 'request' (table expected, got " .. type(options) .. ") ", 2)
 	assert(type(options.Url) == "string", "invalid option 'Url' for argument #1 to 'request' (string expected, got " .. type(options.Url) .. ") ", 2)
 	options.Method = options.Method or "GET"
@@ -845,16 +845,16 @@ function Xeno.request(options)
 	options.Body = options.Body or "e30=" -- "{}" in base64
 	options.Headers = options.Headers or {}
 	if httpSpy then
-		Xeno.rconsoleprint("-----------------[Xeno Http Spy]---------------\nUrl: " .. options.Url .. 
+		Salad.rconsoleprint("-----------------[Salad Http Spy]---------------\nUrl: " .. options.Url .. 
 			"\nMethod: " .. options.Method .. 
 			"\nBody: " .. options.Body .. 
 			"\nHeaders: " .. tostring(HttpService:JSONEncode(options.Headers))
 		)
 	end
 	if (options.Headers["User-Agent"]) then assert(type(options.Headers["User-Agent"]) == "string", "invalid option 'User-Agent' for argument #1 to 'request.Header' (string expected, got " .. type(options.Url) .. ") ", 2) end
-	options.Headers["User-Agent"] = options.Headers["User-Agent"] or "Xeno/RobloxApp/" .. tostring(Xeno.about._version)
+	options.Headers["User-Agent"] = options.Headers["User-Agent"] or "Salad/RobloxApp/" .. tostring(Salad.about._version)
 	options.Headers["Exploit-Guid"] = tostring(hwid)
-	options.Headers["Xeno-Fingerprint"] = tostring(hwid)
+	options.Headers["Salad-Fingerprint"] = tostring(hwid)
 	options.Headers["Roblox-Place-Id"] = tostring(game.PlaceId)
 	options.Headers["Roblox-Game-Id"] = tostring(game.JobId)
 	options.Headers["Roblox-Session-Id"] = HttpService:JSONEncode({
@@ -863,7 +863,7 @@ function Xeno.request(options)
 	})
 	local response = Bridge:request(options)
 	if httpSpy then
-		Xeno.rconsoleprint("-----------------[Response]---------------\nStatusCode: " .. tostring(response.StatusCode) ..
+		Salad.rconsoleprint("-----------------[Response]---------------\nStatusCode: " .. tostring(response.StatusCode) ..
 			"\nStatusMessage: " .. tostring(response.StatusMessage) ..
 			"\nSuccess: " .. tostring(response.Success) ..
 			"\nBody: " .. tostring(response.Body) ..
@@ -873,14 +873,14 @@ function Xeno.request(options)
 	end
 	return response
 end
-Xeno.http = {request = Xeno.request}
-Xeno.http_request = Xeno.request
+Salad.http = {request = Salad.request}
+Salad.http_request = Salad.request
 
-function Xeno.HttpGet(url, returnRaw)
+function Salad.HttpGet(url, returnRaw)
 	assert(type(url) == "string", "invalid argument #1 to 'HttpGet' (string expected, got " .. type(url) .. ") ", 2)
 	local returnRaw = returnRaw or true
 
-	local result = Xeno.request({
+	local result = Salad.request({
 		Url = url,
 		Method = "GET"
 	})
@@ -891,10 +891,10 @@ function Xeno.HttpGet(url, returnRaw)
 
 	return HttpService:JSONDecode(result.Body)
 end
-function Xeno.HttpPost(url, body, contentType)
+function Salad.HttpPost(url, body, contentType)
 	assert(type(url) == "string", "invalid argument #1 to 'HttpPost' (string expected, got " .. type(url) .. ") ", 2)
 	contentType = contentType or "application/json"
-	return Xeno.request({
+	return Salad.request({
 		Url = url,
 		Method = "POST",
 		body = body,
@@ -903,7 +903,7 @@ function Xeno.HttpPost(url, body, contentType)
 		}
 	})
 end
-function Xeno.GetObjects(asset)
+function Salad.GetObjects(asset)
 	return {
 		InsertService:LoadLocalAsset(asset)
 	}
@@ -1002,7 +1002,7 @@ local function setupBlockedServiceFuncs(serviceTable)
 		end
 		
 		if index == "Parent" then
-			return Xeno.game
+			return Salad.game
 		end
 
 		if type(serviceTable[2][index]) == "function" then
@@ -1029,21 +1029,21 @@ for i, serviceTable in proxiedServices do
 	setupBlockedServiceFuncs(serviceTable)
 end
 
-Xeno.game = newproxy(true)
-local gameProxy = getmetatable(Xeno.game)
+Salad.game = newproxy(true)
+local gameProxy = getmetatable(Salad.game)
 
 gameProxy.__index = function(self, index)
 	if index == "HttpGet" or index == "HttpGetAsync" then
 		return function(self, ...)
-			return Xeno.HttpGet(...)
+			return Salad.HttpGet(...)
 		end
 	elseif index == "HttpPost" or index == "HttpPostAsync" then
 		return function(self, ...)
-			return Xeno.HttpPost(...)
+			return Salad.HttpPost(...)
 		end
 	elseif index == "GetObjects" then
 		return function(self, ...)
-			return Xeno.GetObjects(...)
+			return Salad.GetObjects(...)
 		end
 	end
 
@@ -1082,14 +1082,14 @@ end
 
 gameProxy.__metatable = getmetatable(_game)
 
-Xeno.Game = Xeno.game
+Salad.Game = Salad.game
 
-Xeno.workspace = newproxy(true)
-local workspaceProxy = getmetatable(Xeno.workspace)
+Salad.workspace = newproxy(true)
+local workspaceProxy = getmetatable(Salad.workspace)
 workspaceProxy.__index = function(self, index)
 	index = string.gsub(tostring(index), '\0', '')
 	if index == "Parent" then
-		return Xeno.game
+		return Salad.game
 	end
 
 	if type(_workspace[index]) == "function" then
@@ -1111,10 +1111,10 @@ end
 
 workspaceProxy.__metatable = getmetatable(_workspace)
 
-Xeno.Workspace = Xeno.workspace
+Salad.Workspace = Salad.workspace
 
-function Xeno.getgenv()
-	return Xeno
+function Salad.getgenv()
+	return Salad
 end
 
 -- / Filesystem \ --
@@ -1140,7 +1140,7 @@ local function getSaved(path)
 	end
 end
 
-function Xeno.readfile(path)
+function Salad.readfile(path)
 	assert(type(path) == "string", "invalid argument #1 to 'readfile' (string expected, got " .. type(path) .. ") ", 2)
 	local unsavedFile = getUnsaved(Bridge.writefile, path)
 	if unsavedFile then
@@ -1148,7 +1148,7 @@ function Xeno.readfile(path)
 	end
 	return Bridge:readfile(path)
 end
-function Xeno.writefile(path, content)
+function Salad.writefile(path, content)
 	assert(type(path) == "string", "invalid argument #1 to 'writefile' (string expected, got " .. type(path) .. ") ", 2)
 	assert(type(content) == "string", "invalid argument #2 to 'writefile' (string expected, got " .. type(content) .. ") ", 2)
 	local unsavedFile, index = getUnsaved(Bridge.delfile, path)
@@ -1166,7 +1166,7 @@ function Xeno.writefile(path, content)
 		y = content
 	})
 end
-function Xeno.appendfile(path, content)
+function Salad.appendfile(path, content)
 	assert(type(path) == "string", "invalid argument #1 to 'appendfile' (string expected, got " .. type(path) .. ") ", 2)
 	assert(type(content) == "string", "invalid argument #2 to 'appendfile' (string expected, got " .. type(content) .. ") ", 2)
 	local unsavedFile = getUnsaved(Bridge.writefile, path)
@@ -1178,14 +1178,14 @@ function Xeno.appendfile(path, content)
 	pcall(function()
 		readVal = Bridge:readfile(path)
 	end)
-	Xeno.writefile(path, readVal .. content)
+	Salad.writefile(path, readVal .. content)
 end
-function Xeno.loadfile(path)
+function Salad.loadfile(path)
 	assert(type(path) == "string", "invalid argument #1 to 'loadfile' (string expected, got " .. type(path) .. ") ", 2)
-	return Xeno.loadstring(Xeno.readfile(path))
+	return Salad.loadstring(Salad.readfile(path))
 end
-Xeno.dofile = Xeno.loadfile
-function Xeno.isfolder(path)
+Salad.dofile = Salad.loadfile
+function Salad.isfolder(path)
 	assert(type(path) == "string", "invalid argument #1 to 'isfolder' (string expected, got " .. type(path) .. ") ", 2)
 	if getUnsaved(Bridge.delfolder, path) then
 		return false
@@ -1199,7 +1199,7 @@ function Xeno.isfolder(path)
 	end
 	return Bridge:isfolder(path)
 end
-function Xeno.isfile(path) -- return not Xeno.isfolder(path)
+function Salad.isfile(path) -- return not Salad.isfolder(path)
 	assert(type(path) == "string", "invalid argument #1 to 'isfile' (string expected, got " .. type(path) .. ") ", 2)
 	if getUnsaved(Bridge.delfile, path) then
 		return false
@@ -1213,7 +1213,7 @@ function Xeno.isfile(path) -- return not Xeno.isfolder(path)
 	end
 	return Bridge:isfile(path)
 end
-function Xeno.listfiles(path)
+function Salad.listfiles(path)
 	assert(type(path) == "string", "invalid argument #1 to 'listfiles' (string expected, got " .. type(path) .. ") ", 2)
 
 	path = normalize_path(path)
@@ -1243,7 +1243,7 @@ function Xeno.listfiles(path)
 
 	return pathFiles
 end
-function Xeno.makefolder(path)
+function Salad.makefolder(path)
 	assert(type(path) == "string", "invalid argument #1 to 'makefolder' (string expected, got " .. type(path) .. ") ", 2)
 	local unsavedFile, index = getUnsaved(Bridge.delfolder, path)
 	if unsavedFile then
@@ -1257,7 +1257,7 @@ function Xeno.makefolder(path)
 		x = path
 	})
 end
-function Xeno.delfolder(path)
+function Salad.delfolder(path)
 	assert(type(path) == "string", "invalid argument #1 to 'delfolder' (string expected, got " .. type(path) .. ") ", 2)
 	local unsavedFile, index = getUnsaved(Bridge.makefolder, path)
 	if unsavedFile then
@@ -1272,7 +1272,7 @@ function Xeno.delfolder(path)
 		x = path
 	})
 end
-function Xeno.delfile(path)
+function Salad.delfile(path)
 	assert(type(path) == "string", "invalid argument #1 to 'delfile' (string expected, got " .. type(path) .. ") ", 2)
 	local unsavedFile, index = getUnsaved(Bridge.writefile, path)
 	if unsavedFile then
@@ -1287,7 +1287,7 @@ function Xeno.delfile(path)
 	})
 end
 
-function Xeno.getcustomasset(path)
+function Salad.getcustomasset(path)
 	assert(type(path) == "string", "invalid argument #1 to 'getcustomasset' (string expected, got " .. type(path) .. ") ", 2)
 	local unsaved, i, _break = getUnsaved(Bridge.writefile, path), nil
 	while unsaved do 
@@ -1355,13 +1355,13 @@ end
 
 local HashLib, lz4, DrawingLib = getlib("HashLib"), getlib("lz4"), getlib("DrawingLib")
 
-Xeno.base64 = base64
-Xeno.base64_encode = base64.encode
-Xeno.base64encode = base64.encode
-Xeno.base64_decode = base64.decode
-Xeno.base64decode = base64.decode
+Salad.base64 = base64
+Salad.base64_encode = base64.encode
+Salad.base64encode = base64.encode
+Salad.base64_decode = base64.decode
+Salad.base64decode = base64.decode
 
-Xeno.crypt = {
+Salad.crypt = {
 	base64 = base64,
 	base64encode = base64.encode,
 	base64_encode = base64.encode,
@@ -1422,40 +1422,40 @@ Xeno.crypt = {
 		return table.concat(result), b
 	end
 }
-Xeno.crypt.generatebytes = function(len)
-	return Xeno.crypt.generatekey(len)
+Salad.crypt.generatebytes = function(len)
+	return Salad.crypt.generatekey(len)
 end
-Xeno.crypt.random = function(len)
-	return Xeno.crypt.generatekey(len)
+Salad.crypt.random = function(len)
+	return Salad.crypt.generatekey(len)
 end
-Xeno.crypt.decrypt = Xeno.crypt.encrypt
+Salad.crypt.decrypt = Salad.crypt.encrypt
 
-function Xeno.crypt.hash(txt, hashName)
+function Salad.crypt.hash(txt, hashName)
 	for name, func in pairs(HashLib) do
 		if name == hashName or name:gsub("_", "-") == hashName then
 			return func(txt)
 		end
 	end
 end
-Xeno.hash = Xeno.crypt.hash
+Salad.hash = Salad.crypt.hash
 
-Xeno.crypt.lz4 = lz4
-Xeno.crypt.lz4compress = lz4.compress
-Xeno.crypt.lz4decompress = lz4.decompress
+Salad.crypt.lz4 = lz4
+Salad.crypt.lz4compress = lz4.compress
+Salad.crypt.lz4decompress = lz4.decompress
 
-Xeno.lz4 = lz4
-Xeno.lz4compress = lz4.compress
-Xeno.lz4decompress = lz4.decompress
+Salad.lz4 = lz4
+Salad.lz4compress = lz4.compress
+Salad.lz4decompress = lz4.decompress
 
 local Drawing, drawingFunctions = DrawingLib.Drawing, DrawingLib.functions
-Xeno.Drawing = Drawing
+Salad.Drawing = Drawing
 
 for name, func in drawingFunctions do
-	Xeno[name] = func
+	Salad[name] = func
 end
 
 -- / Miscellaneous \ --
-function Xeno.getproperties(instance)
+function Salad.getproperties(instance)
 	assert(typeof(instance) == "Instance", "invalid argument #1 to 'getproperties' (Instance expected, got " .. typeof(instance) .. ") ", 2)
 
 	local objectValue = Instance.new("ObjectValue", objectPointerContainer)
@@ -1472,48 +1472,48 @@ function Xeno.getproperties(instance)
 
 	return HttpService:JSONDecode(result)
 end
-Xeno.gethiddenproperties = Xeno.getproperties
+Salad.gethiddenproperties = Salad.getproperties
 
 local _saveinstance = nil
-function Xeno.saveinstance(options)
+function Salad.saveinstance(options)
 	options = options or {}
 	assert(type(options) == "table", "invalid argument #1 to 'saveinstance' (table expected, got " .. type(options) .. ") ", 2)
 	print("saveinstance Powered by UniversalSynSaveInstance | AGPL-3.0 license")
-	_saveinstance = _saveinstance or Xeno.loadstring(Xeno.HttpGet("https://raw.githubusercontent.com/luau/SynSaveInstance/main/saveinstance.luau", true), "saveinstance")()
+	_saveinstance = _saveinstance or Salad.loadstring(Salad.HttpGet("https://raw.githubusercontent.com/luau/SynSaveInstance/main/saveinstance.luau", true), "saveinstance")()
 	return _saveinstance(options)
 end
-Xeno.savegame = Xeno.saveinstance
+Salad.savegame = Salad.saveinstance
 
-function Xeno.getexecutorname()
-	return Xeno.about._name
+function Salad.getexecutorname()
+	return Salad.about._name
 end
-function Xeno.getexecutorversion()
-	return Xeno.about._version
+function Salad.getexecutorversion()
+	return Salad.about._version
 end
 
-function Xeno.identifyexecutor()
-	return Xeno.getexecutorname(), Xeno.getexecutorversion()
+function Salad.identifyexecutor()
+	return Salad.getexecutorname(), Salad.getexecutorversion()
 end
-Xeno.whatexecutor = Xeno.identifyexecutor
+Salad.whatexecutor = Salad.identifyexecutor
 
-function Xeno.get_hwid()
+function Salad.get_hwid()
 	return hwid
 end
-Xeno.gethwid = Xeno.get_hwid
+Salad.gethwid = Salad.get_hwid
 
-function Xeno.getscriptbytecode(script_instance)
+function Salad.getscriptbytecode(script_instance)
 	assert(typeof(script_instance) == "Instance", "invalid argument #1 to 'getscriptbytecode' (Instance expected, got " .. typeof(script_instance) .. ") ", 2)
 	assert(script_instance.ClassName == "LocalScript" or script_instance.ClassName == "ModuleScript", 
 		"invalid 'ClassName' for 'Instance' #1 to 'getscriptbytecode' (LocalScript or ModuleScript expected, got '" .. script_instance.ClassName .. "') ", 2)
 	return Bridge:getscriptbytecode(script_instance)
 end
-Xeno.dumpstring = Xeno.getscriptbytecode
+Salad.dumpstring = Salad.getscriptbytecode
 
 -- Thanks to plusgiant5 for letting me use konstant api
 
 local last_call = 0
 local function konst_call(konstantType: string, scriptPath: Script | ModuleScript | LocalScript): string
-	local success: boolean, bytecode: string = pcall(Xeno.getscriptbytecode, scriptPath)
+	local success: boolean, bytecode: string = pcall(Salad.getscriptbytecode, scriptPath)
 
 	if (not success) then
 		return `-- Failed to get script bytecode, error:\n\n--[[\n{bytecode}\n--]]`
@@ -1523,7 +1523,7 @@ local function konst_call(konstantType: string, scriptPath: Script | ModuleScrip
 	if time_elapsed <= .5 then
 		task.wait(.5 - time_elapsed)
 	end
-	local httpResult = Xeno.request({
+	local httpResult = Salad.request({
 		Url = "http://api.plusgiant5.com" .. konstantType,
 		Body = bytecode,
 		Method = "POST",
@@ -1540,7 +1540,7 @@ local function konst_call(konstantType: string, scriptPath: Script | ModuleScrip
 	end
 end
 
-function Xeno.Decompile(script_instance)
+function Salad.Decompile(script_instance)
 	if typeof(script_instance) ~= "Instance" then
 		return "-- invalid argument #1 to 'Decompile' (Instance expected, got " .. typeof(script_instance) .. ")"
 	end
@@ -1549,10 +1549,10 @@ function Xeno.Decompile(script_instance)
 	end
 	return konst_call("/konstant/decompile", script_instance)
 end
-Xeno.decompile = Xeno.Decompile
+Salad.decompile = Salad.Decompile
 
 -- for some reason, UniversalSynSaveInstance is using the Disassemble function the same as Decompile.
-function Xeno.__Disassemble(script_instance)
+function Salad.__Disassemble(script_instance)
 	if typeof(script_instance) ~= "Instance" then
 		return "-- invalid argument #1 to 'disassemble' (Instance expected, got " .. typeof(script_instance) .. ")"
 	end
@@ -1561,71 +1561,71 @@ function Xeno.__Disassemble(script_instance)
 	end
 	return konst_call("/konstant/disassemble", script_instance)
 end
-Xeno.__disassemble = Xeno.__Disassemble
+Salad.__disassemble = Salad.__Disassemble
 
-function Xeno.queue_on_teleport(source)
+function Salad.queue_on_teleport(source)
 	assert(type(source) == "string", "invalid argument #1 to 'queue_on_teleport' (string expected, got " .. type(source) .. ") ", 2)
 	return Bridge:queue_on_teleport("s", source)
 end
-Xeno.queueonteleport = Xeno.queue_on_teleport
+Salad.queueonteleport = Salad.queue_on_teleport
 
-function Xeno.setclipboard(content)
+function Salad.setclipboard(content)
 	assert(type(content) == "string", "invalid argument #1 to 'setclipboard' (string expected, got " .. type(content) .. ") ", 2)
 	return Bridge:setclipboard(content)
 end
-Xeno.toclipboard = Xeno.setclipboard
+Salad.toclipboard = Salad.setclipboard
 
-function Xeno.rconsoleclear()
+function Salad.rconsoleclear()
 	return Bridge:rconsole("cls")
 end
-Xeno.consoleclear = Xeno.rconsoleclear
+Salad.consoleclear = Salad.rconsoleclear
 
-function Xeno.rconsolecreate()
+function Salad.rconsolecreate()
 	return Bridge:rconsole("crt")
 end
-Xeno.consolecreate = Xeno.rconsolecreate
+Salad.consolecreate = Salad.rconsolecreate
 
-function Xeno.rconsoledestroy()
+function Salad.rconsoledestroy()
 	return Bridge:rconsole("dst")
 end
-Xeno.consoledestroy = Xeno.rconsoledestroy
+Salad.consoledestroy = Salad.rconsoledestroy
 
-function Xeno.rconsoleprint(...)
+function Salad.rconsoleprint(...)
 	local text = ""
 	for _, v in {...} do
 		text = text .. tostring(v) .. " "
 	end
 	return Bridge:rconsole("prt", "[-] " .. text)
 end
-Xeno.consoleprint = Xeno.rconsoleprint
+Salad.consoleprint = Salad.rconsoleprint
 
-function Xeno.rconsoleinfo(...)
+function Salad.rconsoleinfo(...)
 	local text = ""
 	for _, v in {...} do
 		text = text .. tostring(v) .. " "
 	end
 	return Bridge:rconsole("prt", "[i] " .. text)
 end
-Xeno.consoleinfo = Xeno.rconsoleinfo
+Salad.consoleinfo = Salad.rconsoleinfo
 
-function Xeno.rconsolewarn(...)
+function Salad.rconsolewarn(...)
 	local text = ""
 	for _, v in {...} do
 		text = text .. tostring(v) .. " "
 	end
 	return Bridge:rconsole("prt", "[!] " .. text)
 end
-Xeno.consolewarn = Xeno.rconsolewarn
+Salad.consolewarn = Salad.rconsolewarn
 
-function Xeno.rconsolesettitle(text)
+function Salad.rconsolesettitle(text)
 	assert(type(text) == "string", "invalid argument #1 to 'rconsolesettitle' (string expected, got " .. type(text) .. ") ", 2)
 	return Bridge:rconsole("ttl", text)
 end
-Xeno.rconsolename = Xeno.rconsolesettitle
-Xeno.consolesettitle = Xeno.rconsolesettitle
-Xeno.consolename = Xeno.rconsolesettitle
+Salad.rconsolename = Salad.rconsolesettitle
+Salad.consolesettitle = Salad.rconsolesettitle
+Salad.consolename = Salad.rconsolesettitle
 
-function Xeno.clonefunction(func)
+function Salad.clonefunction(func)
 	assert(type(func) == "function", "invalid argument #1 to 'clonefunction' (function expected, got " .. type(func) .. ") ", 2)
 	local a = func
 	local b = xpcall(setfenv, function(x, y)
@@ -1643,24 +1643,24 @@ function Xeno.clonefunction(func)
 	end)
 end
 
-function Xeno.islclosure(func)
+function Salad.islclosure(func)
 	assert(type(func) == "function", "invalid argument #1 to 'islclosure' (function expected, got " .. type(func) .. ") ", 2)
 	local success = pcall(function()
 		return setfenv(func, getfenv(func))
 	end)
 	return success
 end
-function Xeno.iscclosure(func)
+function Salad.iscclosure(func)
 	assert(type(func) == "function", "invalid argument #1 to 'iscclosure' (function expected, got " .. type(func) .. ") ", 2)
-	return not Xeno.islclosure(func)
+	return not Salad.islclosure(func)
 end
-function Xeno.newlclosure(func)
+function Salad.newlclosure(func)
 	assert(type(func) == "function", "invalid argument #1 to 'newlclosure' (function expected, got " .. type(func) .. ") ", 2)
 	return function(...)
 		return func(...)
 	end
 end
-function Xeno.newcclosure(func)
+function Salad.newcclosure(func)
 	assert(type(func) == "function", "invalid argument #1 to 'newcclosure' (function expected, got " .. type(func) .. ") ", 2)
 	return coroutine.wrap(function(...)
 		while true do
@@ -1669,7 +1669,7 @@ function Xeno.newcclosure(func)
 	end)
 end
 
-function Xeno.fireclickdetector(part)
+function Salad.fireclickdetector(part)
 	assert(typeof(part) == "Instance", "invalid argument #1 to 'fireclickdetector' (Instance expected, got " .. type(part) .. ") ", 2)
 	local clickDetector = part:FindFirstChild("ClickDetector") or part
 	local previousParent = clickDetector.Parent
@@ -1707,7 +1707,7 @@ end
 
 -- I did not make this method  for firetouchinterest
 local touchers_reg = setmetatable({}, { __mode = "ks" })
-function Xeno.firetouchinterest(toucher, toTouch, touch_state)
+function Salad.firetouchinterest(toucher, toTouch, touch_state)
 	assert(typeof(toucher) == "Instance", "invalid argument #1 to 'firetouchinterest' (Instance expected, got " .. type(toucher) .. ") ")
 	assert(typeof(toTouch) == "Instance", "invalid argument #2 to 'firetouchinterest' (Instance expected, got " .. type(toTouch) .. ") ")
 	assert(type(touch_state) == "number", "invalid argument #3 to 'firetouchinterest' (number expected, got " .. type(touch_state) .. ") ")
@@ -1716,7 +1716,7 @@ function Xeno.firetouchinterest(toucher, toTouch, touch_state)
 		touchers_reg[toucher] = {}
 	end
 
-	local toTouchAddress = tostring(Xeno.Xeno.get_real_address(toTouch))
+	local toTouchAddress = tostring(Salad.Salad.get_real_address(toTouch))
 
 	if touch_state == 0 then
 		if touchers_reg[toucher][toTouchAddress] then return end
@@ -1727,7 +1727,7 @@ function Xeno.firetouchinterest(toucher, toTouch, touch_state)
 		newPart.Anchored = true
 		newPart.Transparency = 1
 
-		Xeno.Xeno.spoof_instance(newPart, toTouch)
+		Salad.Salad.spoof_instance(newPart, toTouch)
 		touchers_reg[toucher][toTouchAddress] = task.spawn(function()
 			while task.wait() do
 				newPart.CFrame = toucher.CFrame
@@ -1735,14 +1735,14 @@ function Xeno.firetouchinterest(toucher, toTouch, touch_state)
 		end)
 	elseif touch_state == 1 then
 		if not touchers_reg[toucher][toTouchAddress] then return end
-		Xeno.Xeno.spoof_instance(toTouch, tonumber(toTouchAddress))
+		Salad.Salad.spoof_instance(toTouch, tonumber(toTouchAddress))
 		local toucher_thread = touchers_reg[toucher][toTouchAddress]
 		task.cancel(toucher_thread)
 		touchers_reg[toucher][toTouchAddress] = nil
 	end
 end
 
-function Xeno.fireproximityprompt(proximityprompt, amount, skip)
+function Salad.fireproximityprompt(proximityprompt, amount, skip)
 	assert(typeof(proximityprompt) == "Instance", "invalid argument #1 to 'fireproximityprompt' (Instance expected, got " .. typeof(proximityprompt) .. ") ", 2)
 	assert(proximityprompt:IsA("ProximityPrompt"), "invalid argument #1 to 'fireproximityprompt' (ProximityPrompt expected, got " .. proximityprompt.ClassName .. ") ", 2)
 
@@ -1771,7 +1771,7 @@ function Xeno.fireproximityprompt(proximityprompt, amount, skip)
 	proximityprompt.HoldDuration = oldHoldDuration
 end
 
-function Xeno.setsimulationradius(newRadius, newMaxRadius)
+function Salad.setsimulationradius(newRadius, newMaxRadius)
 	newRadius = tonumber(newRadius)
 	newMaxRadius = tonumber(newMaxRadius) or newRadius
 	assert(type(newRadius) == "number", "invalid argument #1 to 'setsimulationradius' (number expected, got " .. type(newRadius) .. ") ", 2)
@@ -1783,17 +1783,17 @@ function Xeno.setsimulationradius(newRadius, newMaxRadius)
 	end
 end
 
-function Xeno.isreadonly(t)
+function Salad.isreadonly(t)
 	assert(type(t) == "table", "invalid argument #1 to 'isreadonly' (table expected, got " .. type(t) .. ") ", 2)
 	return table.isfrozen(t)
 end
 
 -- / Broken - Not working - Not accurate \ --
-function Xeno.rconsoleinput(text)
+function Salad.rconsoleinput(text)
 	task.wait()
 	return "N/A"
 end
-Xeno.consoleinput = Xeno.rconsoleinput
+Salad.consoleinput = Salad.rconsoleinput
 
 local renv = {
 	print = print, warn = warn, error = error, assert = assert, collectgarbage = collectgarbage, require = require,
@@ -1851,19 +1851,19 @@ local renv = {
 		traceback = debug.traceback, profilebegin = debug.profilebegin, profileend = debug.profileend,
 	},
 
-	game = Xeno.game, workspace = Xeno.workspace, Game = Xeno.game, Workspace = Xeno.workspace,
+	game = Salad.game, workspace = Salad.workspace, Game = Salad.game, Workspace = Salad.workspace,
 
 	getmetatable = getmetatable, setmetatable = setmetatable
 }
 table.freeze(renv)
 
-function Xeno.getrenv()
+function Salad.getrenv()
 	return renv
 end
 
-function Xeno.isexecutorclosure(func)
+function Salad.isexecutorclosure(func)
 	assert(type(func) == "function", "invalid argument #1 to 'isexecutorclosure' (function expected, got " .. type(func) .. ") ", 2)
-	for _, genv in Xeno.getgenv() do
+	for _, genv in Salad.getgenv() do
 		if genv == func then
 			return true
 		end
@@ -1880,13 +1880,13 @@ function Xeno.isexecutorclosure(func)
 		end
 		return isglobal
 	end
-	if check(Xeno.getgenv().getrenv()) then
+	if check(Salad.getgenv().getrenv()) then
 		return false
 	end
 	return true
 end
-Xeno.checkclosure = Xeno.isexecutorclosure
-Xeno.isourclosure = Xeno.isexecutorclosure
+Salad.checkclosure = Salad.isexecutorclosure
+Salad.isourclosure = Salad.isexecutorclosure
 
 local windowActive = true
 UserInputService.WindowFocused:Connect(function()
@@ -1896,19 +1896,19 @@ UserInputService.WindowFocusReleased:Connect(function()
 	windowActive = false
 end)
 
-function Xeno.isrbxactive()
+function Salad.isrbxactive()
 	return windowActive
 end
-Xeno.isgameactive = Xeno.isrbxactive
-Xeno.iswindowactive = Xeno.isrbxactive
+Salad.isgameactive = Salad.isrbxactive
+Salad.iswindowactive = Salad.isrbxactive
 
-function Xeno.getinstances()
+function Salad.getinstances()
 	return _game:GetDescendants()
 end
 
 local nilinstances, cache = {Instance.new("Part")}, {cached = {}}
 
-function Xeno.getnilinstances()
+function Salad.getnilinstances()
 	return nilinstances
 end
 
@@ -1928,9 +1928,9 @@ function cache.replace(x, y)
 	x.Parent = nil
 end
 
-Xeno.cache = cache
+Salad.cache = cache
 
-function Xeno.getgc()
+function Salad.getgc()
 	return table.clone(nilinstances)
 end
 
@@ -1951,18 +1951,18 @@ _game.DescendantAdded:Connect(function(des)
 	cache.cached[des] = true
 end)
 
-function Xeno.getrunningscripts()
+function Salad.getrunningscripts()
 	local scripts = {}
-	for _, v in pairs(Xeno.getinstances()) do
+	for _, v in pairs(Salad.getinstances()) do
 		if v:IsA("LocalScript") and v.Enabled then table.insert(scripts, v) end
 	end
 	return scripts
 end
-Xeno.getscripts = Xeno.getrunningscripts
+Salad.getscripts = Salad.getrunningscripts
 
-function Xeno.getloadedmodules()
+function Salad.getloadedmodules()
 	local modules = {}
-	for _, v in pairs(Xeno.getinstances()) do
+	for _, v in pairs(Salad.getinstances()) do
 		if v:IsA("ModuleScript") then 
 			table.insert(modules, v)
 		end
@@ -1970,24 +1970,24 @@ function Xeno.getloadedmodules()
 	return modules
 end
 
-function Xeno.checkcaller()
-	local info = debug.info(Xeno.getgenv, 'slnaf')
+function Salad.checkcaller()
+	local info = debug.info(Salad.getgenv, 'slnaf')
 	return debug.info(1, 'slnaf')==info
 end
 
-function Xeno.getthreadcontext()
+function Salad.getthreadcontext()
 	return 3
 end
-Xeno.getthreadidentity = Xeno.getthreadcontext
-Xeno.getidentity = Xeno.getthreadcontext
+Salad.getthreadidentity = Salad.getthreadcontext
+Salad.getidentity = Salad.getthreadcontext
 
-function Xeno.setthreadidentity()
+function Salad.setthreadidentity()
 	return 3, "Not Implemented"
 end
-Xeno.setidentity = Xeno.setthreadidentity
-Xeno.setthreadcontext = Xeno.setthreadidentity
+Salad.setidentity = Salad.setthreadidentity
+Salad.setthreadcontext = Salad.setthreadidentity
 
-function Xeno.getsenv(script_instance)
+function Salad.getsenv(script_instance)
 	local env = getfenv(debug.info(2, 'f'))
 	return setmetatable({
 		script = script_instance,
@@ -2005,28 +2005,15 @@ function Xeno.getsenv(script_instance)
 	})
 end
 
-function Xeno.getscripthash(instance) -- !
+function Salad.getscripthash(instance) -- !
 	assert(typeof(instance) == "Instance", "invalid argument #1 to 'getscripthash' (Instance expected, got " .. typeof(instance) .. ") ", 2)
 	assert(instance:IsA("LuaSourceContainer"), "invalid argument #1 to 'getscripthash' (LuaSourceContainer expected, got " .. instance.ClassName .. ") ", 2)
 	return instance:GetHash()
 end
 
-function Xeno.getconnections()
-	return {{
-		Enabled = true, 
-		ForeignState = false, 
-		LuaConnection = true, 
-		Function = function() end,
-		Thread = task.spawn(function() end),
-		Fire = function() end, 
-		Defer = function() end, 
-		Disconnect = function() end,
-		Disable = function() end, 
-		Enable = function() end,
-	}}
-end
+-- someone ought to make getconnections
 
-function Xeno.hookfunction(func, rep)
+function Salad.hookfunction(func, rep)
 	local env = getfenv(debug.info(2, 'f'))
 	for i, v in pairs(env) do
 		if v == func then
@@ -2035,9 +2022,9 @@ function Xeno.hookfunction(func, rep)
 	end
 	return func
 end
-Xeno.replaceclosure = Xeno.hookfunction
+Salad.replaceclosure = Salad.hookfunction
 
-function Xeno.cloneref(reference)
+function Salad.cloneref(reference)
 	if _game:FindFirstChild(reference.Name) or reference.Parent == _game then 
 		return reference
 	else
@@ -2058,18 +2045,18 @@ function Xeno.cloneref(reference)
 	end
 end
 
-function Xeno.compareinstances(x, y)
+function Salad.compareinstances(x, y)
 	if type(getmetatable(y)) == "table" then
 		return x.ClassName == y.ClassName
 	end
 	return false
 end
 
-function Xeno.gethui()
-	return Xeno.cloneref(_game:FindService("CoreGui"))
+function Salad.gethui()
+	return Salad.cloneref(_game:FindService("CoreGui"))
 end
 
-function Xeno.isnetworkowner(part)
+function Salad.isnetworkowner(part)
 	assert(typeof(part) == "Instance", "invalid argument #1 to 'isnetworkowner' (Instance expected, got " .. type(part) .. ") ")
 	if part.Anchored then
 		return false
@@ -2077,7 +2064,7 @@ function Xeno.isnetworkowner(part)
 	return part.ReceiveAge == 0
 end
 
-function Xeno.deepclone(object) -- used for initialization
+function Salad.deepclone(object) -- used for initialization
 	local lookup = {}
 	local function copy(obj)
 		if type(obj) ~= 'table' then return obj end
@@ -2091,8 +2078,8 @@ function Xeno.deepclone(object) -- used for initialization
 	return copy(object)
 end
 
-Xeno.debug = table.clone(debug) -- the debug funcs was not by me (.rizve) credits goes to the person that made it
-function Xeno.debug.getinfo(f, options)
+Salad.debug = table.clone(debug) -- the debug funcs was not by me (.rizve) credits goes to the person that made it
+function Salad.debug.getinfo(f, options)
 	if type(options) == "string" then
 		options = string.lower(options) 
 	else
@@ -2124,7 +2111,7 @@ function Xeno.debug.getinfo(f, options)
 	return result
 end
 
-function Xeno.debug.getmetatable(table_or_userdata)
+function Salad.debug.getmetatable(table_or_userdata)
 	local result = getmetatable(table_or_userdata)
 
 	if result == nil then
@@ -2257,24 +2244,24 @@ function Xeno.debug.getmetatable(table_or_userdata)
 	return real_metamethods
 end
 
-Xeno.debug.setmetatable = setmetatable
+Salad.debug.setmetatable = setmetatable
 
-function Xeno.getrawmetatable(object)
+function Salad.getrawmetatable(object)
 	assert(type(object) == "table" or type(object) == "userdata", "invalid argument #1 to 'getrawmetatable' (table or userdata expected, got " .. type(object) .. ")", 2)
-	local raw_mt = Xeno.debug.getmetatable(object)
+	local raw_mt = Salad.debug.getmetatable(object)
 	if raw_mt and raw_mt.__metatable then
 		raw_mt.__metatable = nil 
-		local result_mt = Xeno.debug.getmetatable(object)
+		local result_mt = Salad.debug.getmetatable(object)
 		raw_mt.__metatable = "Locked!"
 		return result_mt
 	end
 	return raw_mt
 end
 
-function Xeno.setrawmetatable(object, newmetatbl)
+function Salad.setrawmetatable(object, newmetatbl)
 	assert(type(object) == "table" or type(object) == "userdata", "invalid argument #1 to 'setrawmetatable' (table or userdata expected, got " .. type(object) .. ")", 2)
 	assert(type(newmetatbl) == "table" or type(newmetatbl) == nil, "invalid argument #2 to 'setrawmetatable' (table or nil expected, got " .. type(object) .. ")", 2)
-	local raw_mt = Xeno.debug.getmetatable(object)
+	local raw_mt = Salad.debug.getmetatable(object)
 	if raw_mt and raw_mt.__metatable then
 		local old_metatable = raw_mt.__metatable
 		raw_mt.__metatable = nil  
@@ -2289,19 +2276,19 @@ function Xeno.setrawmetatable(object, newmetatbl)
 	return true
 end
 
-function Xeno.hookmetamethod(t, index, func)
+function Salad.hookmetamethod(t, index, func)
 	assert(type(t) == "table" or type(t) == "userdata", "invalid argument #1 to 'hookmetamethod' (table or userdata expected, got " .. type(t) .. ")", 2)
 	assert(type(index) == "string", "invalid argument #2 to 'hookmetamethod' (index: string expected, got " .. type(t) .. ")", 2)
 	assert(type(func) == "function", "invalid argument #3 to 'hookmetamethod' (function expected, got " .. type(t) .. ")", 2)
 	local o = t
-	local mt = Xeno.debug.getmetatable(t)
+	local mt = Salad.debug.getmetatable(t)
 	mt[index] = func
 	t = mt
 	return o
 end
 
 local fpscap = math.huge
-function Xeno.setfpscap(cap)
+function Salad.setfpscap(cap)
 	cap = tonumber(cap)
 	assert(type(cap) == "number", "invalid argument #1 to 'setfpscap' (number expected, got " .. type(cap) .. ")", 2)
 	if cap < 1 then cap = math.huge end
@@ -2314,11 +2301,11 @@ RunService.RenderStepped:Connect(function()
 
 	task.wait()
 end)
-function Xeno.getfpscap()
+function Salad.getfpscap()
 	return fpscap
 end
 
-function Xeno.mouse1click(x, y)
+function Salad.mouse1click(x, y)
 	x = x or 0
 	y = y or 0
 
@@ -2327,21 +2314,21 @@ function Xeno.mouse1click(x, y)
 	VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, _game, false)
 end
 
-function Xeno.mouse1press(x, y)
+function Salad.mouse1press(x, y)
 	x = x or 0
 	y = y or 0
 
 	VirtualInputManager:SendMouseButtonEvent(x, y, 0, true, _game, false)
 end
 
-function Xeno.mouse1release(x, y)
+function Salad.mouse1release(x, y)
 	x = x or 0
 	y = y or 0
 
 	VirtualInputManager:SendMouseButtonEvent(x, y, 0, false, _game, false)
 end
 
-function Xeno.mouse2click(x, y)
+function Salad.mouse2click(x, y)
 	x = x or 0
 	y = y or 0
 
@@ -2350,25 +2337,25 @@ function Xeno.mouse2click(x, y)
 	VirtualInputManager:SendMouseButtonEvent(x, y, 1, false, _game, false)
 end
 
-function Xeno.mouse2press(x, y)
+function Salad.mouse2press(x, y)
 	x = x or 0
 	y = y or 0
 
 	VirtualInputManager:SendMouseButtonEvent(x, y, 1, true, _game, false)
 end
 
-function Xeno.mouse2release(x, y)
+function Salad.mouse2release(x, y)
 	x = x or 0
 	y = y or 0
 
 	VirtualInputManager:SendMouseButtonEvent(x, y, 1, false, _game, false)
 end
 
-function Xeno.mousescroll(x, y, z)
+function Salad.mousescroll(x, y, z)
 	VirtualInputManager:SendMouseWheelEvent(x or 0, y or 0, z or false, _game)
 end
 
-function Xeno.mousemoverel(x, y)
+function Salad.mousemoverel(x, y)
 	x = x or 0
 	y = y or 0
 
@@ -2379,21 +2366,21 @@ function Xeno.mousemoverel(x, y)
 	VirtualInputManager:SendMouseMoveEvent(x, y, _game)
 end
 
-function Xeno.mousemoveabs(x, y)
+function Salad.mousemoveabs(x, y)
 	x = x or 0
 	y = y or 0
 
 	VirtualInputManager:SendMouseMoveEvent(x, y, _game)
 end
 
-function Xeno.getscriptclosure(s)
+function Salad.getscriptclosure(s)
 	return function()
-		return table.clone(Xeno.require(s))
+		return table.clone(Salad.require(s))
 	end
 end
-Xeno.getscriptfunction = Xeno.getscriptclosure
+Salad.getscriptfunction = Salad.getscriptclosure
 
-function Xeno.isscriptable(object, property)
+function Salad.isscriptable(object, property)
 	if object and typeof(object) == 'Instance' then
 		local success, result = pcall(function()
 			return object[property] ~= nil
@@ -2405,7 +2392,7 @@ end
 
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
-Xeno.loadstring(Xeno.HttpGet("https://raw.githubusercontent.com/Salad-exp/SaladXeno/main/SaladHolder/SaladInit.luau", true), "saladInit")()
+Salad.loadstring(Salad.HttpGet("https://raw.githubusercontent.com/Salad-exp/SaladSalad/main/SaladHolder/SaladInit.luau", true), "saladInit")()
 -------------------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
@@ -2418,7 +2405,7 @@ task.spawn(function() -- queue_on_teleport handler
 	local source = Bridge:queue_on_teleport("g")
 	if type(source) == "string" and source ~= "" then
 		local rawLoadstringFunc = Bridge:loadstring(source, "queue_on_teleport")
-		setfenv(rawLoadstringFunc, merge(getfenv(rawLoadstringFunc), Xeno))
+		setfenv(rawLoadstringFunc, merge(getfenv(rawLoadstringFunc), Salad))
 		task.spawn(rawLoadstringFunc)
 	end
 end)
@@ -2433,7 +2420,7 @@ task.spawn(function() -- auto execute
 	})
 	if result and result.Success and result.Body ~= "" then
 		local rawLoadstringFunc = Bridge:loadstring(result.Body, "autoexec")
-		setfenv(rawLoadstringFunc, merge(getfenv(rawLoadstringFunc), Xeno))
+		setfenv(rawLoadstringFunc, merge(getfenv(rawLoadstringFunc), Salad))
 		task.spawn(rawLoadstringFunc)
 	end
 end)
@@ -2444,9 +2431,9 @@ local function listen(coreModule)
 		pcall(function()
 			execution_table = _require(coreModule)
 		end)
-		if type(execution_table) == "table" and execution_table["x e n o"] and (not execution_table.__executed) and coreModule.Parent == scriptsContainer then
-			local execLoad = execution_table["x e n o"]
-			setfenv(execLoad, merge(getfenv(execLoad), Xeno))
+		if type(execution_table) == "table" and execution_table["s a l a d"] and (not execution_table.__executed) and coreModule.Parent == scriptsContainer then
+			local execLoad = execution_table["s a l a d"]
+			setfenv(execLoad, merge(getfenv(execLoad), Salad))
 			task.spawn(execLoad)
 
 			execution_table.__executed = true

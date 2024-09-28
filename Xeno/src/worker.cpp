@@ -263,7 +263,7 @@ RBXClient::RBXClient(DWORD processID) :
     // In-game, hooking a module that has custom bytecode we are writing.
 
     auto RobloxReplicatedStorage = DataModel.FindFirstChildOfClass("RobloxReplicatedStorage");
-    if (RobloxReplicatedStorage->FindFirstChild("Xeno")) {
+    if (RobloxReplicatedStorage->FindFirstChild("Salad")) {
         std::cerr << "[!] Client '" << Username << "' is already attached\n";
         // When player serverhops the GUID is going to be replaced with the new one. This fixes the communication with the bridge
         PatchScript->SetBytecode(Compile("coroutine.wrap(function(...)" + clientScript + "\nend)();" + PatchScriptSource));
@@ -372,21 +372,21 @@ void RBXClient::execute(const std::string& source) const {
     if (!RobloxReplicatedStorage)
         return;
 
-    auto xenoFolder = RobloxReplicatedStorage->FindFirstChild("Xeno");
-    if (!xenoFolder)
+    auto saladFolder = RobloxReplicatedStorage->FindFirstChild("Salad");
+    if (!saladFolder)
         return;
 
-    auto xenoModules = xenoFolder->FindFirstChild("Scripts");
-    if (!xenoModules)
+    auto saladModules = saladFolder->FindFirstChild("Scripts");
+    if (!saladModules)
         return;
 
-    auto xenoModule = xenoModules->FindFirstChildOfClass("ModuleScript");
-    if (!xenoModule)
+    auto saladModule = saladModules->FindFirstChildOfClass("ModuleScript");
+    if (!saladModule)
         return;
 
-    xenoModule->SetBytecode(Compile("return {['x e n o']=function(...)do local function s(i, v)getfenv(debug.info(0, 'f'))[i] = v;getfenv(debug.info(1, 'f'))[i] = v;end;for i,v in pairs(getfenv(debug.info(1,'f')))do s(i, v)end;setmetatable(getgenv(),{__newindex=function(t,i,v)rawset(t,i,v)s(i,v)end})end;" + source +"\nend}"), true);
+    saladModule->SetBytecode(Compile("return {['s a l a d']=function(...)do local function s(i, v)getfenv(debug.info(0, 'f'))[i] = v;getfenv(debug.info(1, 'f'))[i] = v;end;for i,v in pairs(getfenv(debug.info(1,'f')))do s(i, v)end;setmetatable(getgenv(),{__newindex=function(t,i,v)rawset(t,i,v)s(i,v)end})end;" + source +"\nend}"), true);
     
-    xenoModule->UnlockModule();
+    saladModule->UnlockModule();
 }
 
 bool RBXClient::loadstring(const std::string& source, const std::string& script_name, const std::string& chunk_name) const {
@@ -397,11 +397,11 @@ bool RBXClient::loadstring(const std::string& source, const std::string& script_
     if (!RobloxReplicatedStorage)
         return false;
 
-    auto xenoFolder = RobloxReplicatedStorage->FindFirstChild("Xeno");
-    if (!xenoFolder)
+    auto saladFolder = RobloxReplicatedStorage->FindFirstChild("Salad");
+    if (!saladFolder)
         return false;
 
-    auto cloned_module = xenoFolder->FindFirstChild(script_name);
+    auto cloned_module = saladFolder->FindFirstChild(script_name);
     if (!cloned_module)
         return false;
 
@@ -419,11 +419,11 @@ std::uintptr_t RBXClient::GetObjectValuePtr(const std::string_view objectval_nam
     Instance DataModel(dataModel_Address, handle);
     auto RobloxReplicatedStorage = DataModel.FindFirstChildOfClass("RobloxReplicatedStorage");
 
-    auto xenoFolder = RobloxReplicatedStorage->FindFirstChild("Xeno");
-    if (!xenoFolder)
+    auto saladFolder = RobloxReplicatedStorage->FindFirstChild("Salad");
+    if (!saladFolder)
         return 0;
 
-    auto objectValContainer = xenoFolder->FindFirstChild("Instance Pointers");
+    auto objectValContainer = saladFolder->FindFirstChild("Instance Pointers");
     if (!objectValContainer)
         return 0;
 
